@@ -3,6 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const app = express();
 const port = 10000;
+app.use(express.json()); // Must be added before any POST routes
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -63,7 +64,7 @@ app.post("/update-by-code", (req, res) => {
     [newCartId, used, code],
     (err) => {
       if (err) return res.status(500).json({ error: err.message });
-      res.send("Update by code successful");
+      res.json({ success: true, message: "Update by code successful" });
     }
   );
 });
@@ -76,7 +77,7 @@ app.post("/update-by-cart", (req, res) => {
     [newCode, used, cartId],
     (err) => {
       if (err) return res.status(500).json({ error: err.message });
-      res.send("Update by cartId successful");
+      res.json({ success: true, message: "Update by cartId successful" });
     }
   );
 });
