@@ -1,19 +1,33 @@
-require("dotenv").config();
-const express = require("express");
-const mysql = require("mysql2");
-const cors = require("cors");
-
+require('dotenv').config();
+const express = require('express');
+const mysql = require('mysql2');
 const app = express();
-app.use(cors());
-app.use(express.json());
+const port = 10000;
 
 const db = mysql.createConnection({
-  host: process.env.HOST,
-  port: process.env.PORT,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  database: process.env.DB_NAME
 });
+
+db.connect(err => {
+  if (err) {
+    console.error("Database connection failed:", err.message);
+    return;
+  }
+  console.log("Connected to Aiven MySQL successfully");
+});
+
+app.get('/', (req, res) => {
+  res.send('API is running');
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
 
 // ✅ GET all data
 app.get("/data", (_, res) => {
@@ -67,12 +81,6 @@ app.post("/update-by-cart", (req, res) => {
   );
 });
 
-// ✅ Health check
-app.get("/", (_, res) => {
-  res.send("API is live!");
-});
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+
